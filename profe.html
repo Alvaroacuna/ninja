@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Duelo de Cartas</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" class="brand-logo">Juego de cartas</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="sass.html">Sass</a></li>
+          <li><a href="badges.html">Components</a></li>
+          <li><a href="collapsible.html">JavaScript</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container">
+      <div class="row">
+        <div class="col m12">
+          <!--- Acá pongo las cartitas -->
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script>
+      class Carta {
+        constructor(nombre, costo) {
+          this.nombre = nombre;
+          this.costo = costo;
+        }
+      }
+
+      class Unidad extends Carta {
+        
+        constructor(nombre, costo, poder, resistencia) {
+          super(nombre, costo);
+          this.poder = poder;
+          this.resistencia = resistencia;
+        }
+
+        atacar(otra_unidad) {
+          // lo primero es verificar que 'otra_unidad' sea efectivamente un objeto del tipo 'Unidad'
+          if (!(otra_unidad instanceof Unidad)) {
+            console.log('ERROR!!! Se está atacando algo que no es una Unidad');
+            return;
+          }
+          // acá le tengo que quita resistencia a la otra unidad un valor igual a mi poder
+          //otra_unidad.resistencia = otra_unidad.resistencia - this.poder;
+          otra_unidad.resistencia -= this.poder;
+
+          if (otra_unidad.resistencia <= 0) {
+            console.log(otra_unidad.nombre + ' MURIOOOO!');
+          }
+        }
+      }
+
+      class Efecto extends Carta {
+
+        constructor(nombre, costo, texto, stat, magnitud) {
+          super(nombre, costo);
+          this.texto = texto;
+          this.stat = stat;
+          this.magnitud = magnitud;
+        }
+
+        afectar(unidad) {
+          if (!unidad instanceof Unidad) {
+            console.log('ERROR!!! Se esta afectando algo que no es del tipo Unidad');
+            return;
+          }
+
+          if (this.stat == 'resistencia') {
+            unidad.resistencia = unidad.resistencia + this.magnitud;
+          } else {  // this.stat == 'poder'
+            unidad.poder = unidad.poder + this.magnitud;
+          }
+        }
+      }
+      
+      // PASO 1
+      console.log('Jugador 1 convoca a Ninja Rojo');
+      const ninja_rojo = new Unidad('Ninja Rojo', 3, 3, 4);
+      
+      // PASO 2
+      console.log('El jugador 1 juega "Algoritmo duro" en "Ninja Cinturón Rojo"');
+      const algoritmo = new Efecto('Algoritmo Dificil', 2, 'aumentar la resistencia del objetivo en 3',
+                                   'resistencia', 3);
+      algoritmo.afectar(ninja_rojo);
+      
+      // PASO 3
+      console.log('El jugador 2 convoca a "Ninja Cinturón Negro"');
+      const ninja_negro = new Unidad('Ninja Negro', 4, 5, 4);
+
+      // PASO 4
+      console.log('El jugador 2 juega "Rechazo de promesa no controlada" en "Ninja Cinturón Rojo"');
+      const promesa_no_controlada = new Efecto('Rechazo de promesa no manejado', 1, 'reducir la resistencia del objetivo en 2',
+                                                'resistencia', -2);
+      promesa_no_controlada.afectar(ninja_rojo);
+
+      // PASO 5
+      console.log('El jugador 1 juega "Programación en pareja" en "Ninja Cinturón Rojo"');
+      const prog_parejas = new Efecto('Programación en pareja', 3, 'aumentar el poder del objetivo en 2',
+                                      'poder', 2);
+      prog_parejas.afectar(ninja_rojo);
+
+      // PASO 6
+      console.log('"Ninja Cinturón Rojo" ataca a "Ninja Cinturón Negro"');
+      ninja_rojo.atacar(ninja_negro);
+
+      
+    </script>
+  </body>
+</html>
